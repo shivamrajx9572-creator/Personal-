@@ -1,0 +1,29 @@
+# ============================================================================
+# MAYA ULTRA-POWER SERVER - MASTER REQUIREMENTS
+# Python Version: 3.11.9 (Recommended)
+# ============================================================================
+
+# --- Core Web Framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+aiofiles==24.1.0
+
+# --- Pydantic & Configuration ---
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-dotenv==1.0.1
+
+# --- Async Database ---
+aiosqlite==0.20.0
+
+# --- HTTP Client (AI Providers) ---
+httpx==0.28.1
+
+# --- Document Generation (File 5) ---
+reportlab==4.2.5
+openpyxl==3.1.5
+python-docx==1.1.2
+
+# --- Numerics (Vision/Frame Processing) ---
+numpy==2.2.1

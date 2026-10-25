@@ -1,0 +1,51 @@
+# ============================================================================
+# MAYA ULTRA-POWER SERVER - RENDER BLUEPRINT
+# Deploy: render.com → Blueprints → New Blueprint Instance
+# ============================================================================
+services:
+  - type: web
+    name: maya-ultra-server
+    runtime: python
+    plan: starter                    # ⚠️ Required for persistent disk (free plan = no disk = data loss)
+    region: singapore                # Closest to India (Mumbai) for low latency
+    branch: main
+    autoDeploy: false                # Manual deploy only (prevents accidental prod changes)
+    healthCheckPath: /health
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*" --workers 1
+
+    envVars:
+      # --- Runtime ---
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PYTHONUNBUFFERED
+        value: "1"
+
+      # --- Application Paths ---
+      - key: MAYA_PUBLIC_DIR
+        value: /var/data/generated_public
+      - key: MAYA_DB_PATH
+        value: /var/data/maya_ultra_core.db
+
+      # --- REQUIRED SECRETS (Set manually in Render Dashboard → Environment) ---
+      - key: MAYA_SERVER_API_KEY
+        sync: false
+      - key: MAYA_ADMIN_SECRET
+        sync: false
+      - key: MAYA_HMAC_SECRET
+        sync: false
+
+      # --- Optional Config ---
+      - key: MAYA_TOKEN_TTL_HOURS
+        value: "720"                 # 30 days
+      - key: MAYA_RATE_LIMIT_WINDOW
+        value: "60"
+      - key: MAYA_RATE_LIMIT_MAX_REQ
+        value: "60"
+      - key: MAYA_OFFICIAL_APK_SHA256
+        sync: false                  # Set only if you want APK signature pinning
+
+    disk:
+      name: maya-data
+      mountPath: /var/data
+      sizeGB: 1                      # 1GB is enough for SQLite + generated files
